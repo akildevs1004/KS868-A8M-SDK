@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Settings</title>
+  <style>
+   
+  </style>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+  <div class="header ">
+     <img src="http://{ipAddress}/logo" alt="Logo">
+
+  
+ <div>Version:{firmWareVersion}</div>
+
+
+
+
+
+
+
+  </div>
+  <div class="container" style=" height:800px;margin:auto;">
+    <h2>Login </h2>
+    <form action="/login" method="POST" style="height:190px;width:300px">
+      Username: <input type="text" name="user"><br>
+      Password: <input type="password" name="pass"><br>
+     <span style="color:red">{loginErrorMessage}</span> <input style="float:right" type="submit" value="Login">
+    </form>
+  </div>
+</body>
+
+</html>
