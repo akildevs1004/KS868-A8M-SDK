@@ -6,13 +6,14 @@
   <br />
 
 
+
   <form id="uploadForm" method="POST" enctype="multipart/form-data">
     <input type="file" name="upload" accept=".html" id="fileInput" />
     <button type='submit' class="btn" value="">Upload Html File</button>
   </form>
 
-  <div id="progressBar">
-    <div id="progress"></div>
+  <div class='progress-container'>
+    <div id='progressBar' class='progress-bar'>0%</div>
   </div>
 
   <a href='/restart'>Restart</a>

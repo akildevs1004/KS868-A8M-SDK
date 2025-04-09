@@ -91,19 +91,74 @@ String readFile(String path) {
 }
 
 // Save data to config file
+// void saveConfig(String filename, String data) {
+//   File file = LittleFS.open("/" + filename, FILE_WRITE);
+//   if (!file) {
+//     Serial.println("Failed to open file for writing: " + filename);
+//     return;
+//   }
+
+//   deviceConfigContent = data;
+//   file.print(data);
+//   file.close();
+//   Serial.println(data);
+//   Serial.println("Data saved to " + filename);
+// }
+
+ 
+
 void saveConfig(String filename, String data) {
-  File file = LittleFS.open("/" + filename, FILE_WRITE);
+  // Open the config file for reading
+  File file = LittleFS.open("/" + filename, FILE_READ);
+  if (!file) {
+    Serial.println("Failed to open file for reading: " + filename);
+    return;
+  }
+
+  // Read the current content of the file into a String
+  String fileContent = "";
+  while (file.available()) {
+    fileContent += (char)file.read();
+  }
+  file.close();
+
+  // Parse the existing JSON data from the file
+  DynamicJsonDocument doc(1024);  // Adjust size based on the size of your JSON
+  DeserializationError error = deserializeJson(doc, fileContent);
+
+  if (error) {
+    Serial.println("Failed to parse JSON from the file.");
+    return;
+  }
+
+  // Parse the incoming data (new JSON string)
+  DynamicJsonDocument newDoc(1024);  // Adjust size based on incoming JSON
+  error = deserializeJson(newDoc, data);
+
+  if (error) {
+    Serial.println("Failed to parse incoming JSON data.");
+    return;
+  }
+
+  // Merge or update fields from newDoc into the existing doc
+  for (JsonPair p : newDoc.as<JsonObject>()) {
+    doc[p.key()] = p.value();  // Update/merge the fields
+  }
+
+  // Open the file for writing (this will overwrite the file)
+  file = LittleFS.open("/" + filename, FILE_WRITE);
   if (!file) {
     Serial.println("Failed to open file for writing: " + filename);
     return;
   }
 
-  deviceConfigContent = data;
-  file.print(data);
+  // Serialize the updated JSON back to the file
+  serializeJson(doc, file);
   file.close();
-  Serial.println(data);
-  Serial.println("Data saved to " + filename);
+
+  Serial.println("Updated data saved to " + filename);
 }
+
 
 
 

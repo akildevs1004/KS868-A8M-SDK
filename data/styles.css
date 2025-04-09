@@ -12,7 +12,7 @@ form {
 }
 input[type="text"], input[type="password"] {
   width: 100%;
-  padding: 8px;
+  /* padding: 8px; */
   margin: 5px 0 15px 0;
   box-sizing: border-box;
 }
@@ -104,7 +104,7 @@ a:hover {
     table,
     th,
     td {
-      border: 1px solid #ddd;
+      /* border: 1px solid #ddd; */
     }
 
     th,
@@ -170,7 +170,7 @@ a:hover {
 /* -----------Upload HTML css */
     #progressBar {
       width: 100%;
-      /* background-color: #f3f3f3; */
+        background-color: #f3f3f3; 
     }
 
     #progressBar div {
@@ -181,3 +181,72 @@ a:hover {
       line-height: 30px;
       color: white;
     }
+
+
+ 
+  input ,
+  select {
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+    background-color: #f9f9f9;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    background-color: #fff;
+  }
+
+  input[type="submit"] {
+    padding: 10px 20px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+ 
+
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: #fff;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d32f2f;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: inline-block;
+    width: 200px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 200px;
+  }

@@ -185,7 +185,7 @@ void handleForm1Submit() {
   doc["eth_gateway"] = server.arg("eth_gateway");
   doc["eth_subnet"] = server.arg("eth_subnet");
 
-  doc["device_serial_number"] = server.arg("device_serial_number");
+  doc["device_serial_number"] =device_serial_number;//config["device_serial_number"].as<String>() ;//server.arg("device_serial_number");
 
 
   doc["server_url"] = server.arg("server_url");

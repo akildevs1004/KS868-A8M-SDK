@@ -1,8 +1,8 @@
-<div class="container">
+<div class="container1">
 
-  <span style="width:30%;text-align:left;float:left">
+  <!-- <span style="width:30%;text-align:left;float:left">
     <h1> Settings</h1>
-  </span>
+  </span> -->
   <span style="width:70%;text-align:left"><span style="color:green">{GlobalWebsiteResponseMessage}</span>
 
     <span style="color:red">{GlobalWebsiteErrorMessage}</span>
@@ -16,226 +16,270 @@
 
     </div>
 
-    <form action="/submit-form1" method="POST" click="return verifyform()">
+    <form style="background-color: #DDD;" action="/submit-form1" method="POST" click="return verifyform()">
       <table>
 
         <tr>
-
-          <td colspan=2 style="color:red">
-            Network Settings
-          </td>
-        </tr>
-        <tr>
-          <td><label for="connectionType">Connection Type</label></td>
           <td>
-            <select name="wifi_or_ethernet" id="wifi_or_ethernet" style="width:200px">
-              <option value="1">WiFi</option>
-              <option value="0">Ethernet</option>
-            </select>
-          </td>
-        </tr>
+            <div class="card">
+              <div class="card-title">Network Settings</div>
 
-        <!-- WiFi Fields -->
-        <tr id="wifiFields">
-          <td><label for="wifiSsid">Wifi SSID Name:</label></td>
-          <td><input id="wifi_ssid" style="width:200px" type="text" value='{wifi_ssid}' name="wifi_ssid"></td>
-        </tr>
-        <tr id="wifiPasswordField">
-          <td><label for="wifiPass">Wifi Password:</label></td>
-          <td><input id="wifi_password" style="width:200px" type="text" value='{wifi_password}' name="wifi_password">
-          </td>
-        </tr>
-        <tr id="wifiIpField">
-          <td><label for="wifiIp">WiFi IP:</label></td>
-          <td><input id="wifi_ip" style="width:200px" value='{wifi_ip}' name="wifi_ip"></td>
-        </tr>
+              <table>
 
-        <!-- Ethernet Fields -->
-        <tr id="ethernetFields" style="display:none1">
-          <td><label for="ethIp">Ethernet IP:</label></td>
-          <td><input id="eth_ip" style="width:200px" value='{eth_ip}' name="eth_ip"></td>
-        </tr>
-        <tr id="ethGatewayField" style="display:none1">
-          <td><label for="ethGateway">Ethernet Gateway:</label></td>
-          <td><input id="eth_gateway" style="width:200px" value='{eth_gateway}' name="eth_gateway"></td>
-        </tr>
-        <tr id="ethSubnetField" style="display:none1">
-          <td><label for="ethSubnet">Ethernet Subnet:</label></td>
-          <td><input id="eth_subnet" style="width:200px" value='{eth_subnet}' name="eth_subnet"></td>
-        </tr>
+                <tr>
+                  <td style="width:500px;"><label for="connectionType">Active Connection Type</label></td>
+                  <td>
+                    <select name="wifi_or_ethernet" id="wifi_or_ethernet" style="width:200px">
+                      <option value="1">WiFi</option>
+                      <option value="0">Ethernet</option>
+                    </select>
+                  </td>
+                </tr>
 
+                <!-- WiFi Fields -->
+                <tr id="wifiFields">
+                  <td><label for="wifiSsid">Wifi SSID Name:</label></td>
+                  <td><input id="wifi_ssid" style="width:200px" type="text" value='{wifi_ssid}' name="wifi_ssid"></td>
+                </tr>
+                <tr id="wifiPasswordField">
+                  <td><label for="wifiPass">Wifi Password:</label></td>
+                  <td><input id="wifi_password" style="width:200px" type="text" value='{wifi_password}'
+                      name="wifi_password">
+                  </td>
+                </tr>
+                <tr id="wifiIpField">
+                  <td><label for="wifiIp">WiFi IP:</label></td>
+                  <td><input id="wifi_ip" style="width:200px" value='{wifi_ip}' name="wifi_ip"></td>
+                </tr>
 
-
-        <tr>
-
-        <tr>
-
-          <td colspan=2 style="color:red">
-            Device Settings
-          </td>
-        </tr>
-
-
-
-
-        <tr>
-          <td><label for="wifiIp">Device Serial Number:</label></td>
-          <td><input id="device_serial_number" style="width:200px" value='{device_serial_number}'
-              name="device_serial_number" /></td>
-        </tr>
-
-        <td colspan=2 style="color:red">
-          Server Settings
-        </td>
-        </tr>
-
-
-
-
-
-        <tr>
-          <td><label for="serverURL">Server URL:</label></td>
-          <td><input style="width:200px" type="text" id="server_url" name="server_url" value="{server_url}" required />
-          </td>
-        </tr>
-        <tr>
-          <td><label for="serverURL1">Heartbeat Interval(Seconds):</label></td>
-          <td> <select style="width:200px" name="heartbeat" id="heartbeat" value="{heartbeat}">
-
-
-
-            </select> </td>
-        </tr>
-
-        <tr>
-          <td><label for="serverURL3">Socket IP address:</label></td>
-          <td><input style="width:200px" type="text" id="server_ip" name="server_ip" value="{server_ip}" required />
-          </td>
-        </tr>
-        <tr>
-          <td><label for="serverURL3">Socket Port :</label></td>
-          <td><input style="width:200px" type="text" id="server_port" name="server_port" value="{server_port}" required>
-
-            <div id="socketConnectionStatus"></div>
+                <!-- Ethernet Fields -->
+                <tr id="ethernetFields" style="display:none1">
+                  <td><label for="ethIp">Ethernet IP:</label></td>
+                  <td><input id="eth_ip" style="width:200px" value='{eth_ip}' name="eth_ip"></td>
+                </tr>
+                <tr id="ethGatewayField" style="display:none1">
+                  <td><label for="ethGateway">Ethernet Gateway:</label></td>
+                  <td><input id="eth_gateway" style="width:200px" value='{eth_gateway}' name="eth_gateway"></td>
+                </tr>
+                <tr id="ethSubnetField" style="display:none1">
+                  <td><label for="ethSubnet">Ethernet Subnet:</label></td>
+                  <td><input id="eth_subnet" style="width:200px" value='{eth_subnet}' name="eth_subnet"></td>
+                </tr>
+              </table>
+            </div>
           </td>
         </tr>
 
 
 
-
         <tr>
-
-          <td colspan=2 style="color:red">
-            Sensor Settings
-          </td>
-        </tr>
-
-        <tr>
-          <td style="width:400px"><label for="temp_checkbox">Temperature:</label></td>
-          <td><input style="width:200px" type="checkbox" name="temp_checkbox" id="temp_checkbox"
-              onclick="toggleInput('temp_checkbox', 'max_temperature');toggleInput('temp_checkbox', 'min_temperature')">
-          </td>
-        </tr>
-        <tr>
-          <td><label for="max_temperature">Max Temperature Threshold (numbers):</label></td>
-          <td><input style="width:200px" type="number" id="max_temperature" name="max_temperature" required disabled>
-          </td>
-        </tr>
-        <tr>
-          <td><label for="min_temperature">Min Temperature Threshold (numbers):</label></td>
-          <td><input style="width:200px" type="number" id="min_temperature" name="min_temperature" required disabled>
-          </td>
-        </tr>
-
-        <tr>
-          <td><label for="humidity_checkbox">Humidity:</label></td>
-          <td><input style="width:200px" type="checkbox" name="humidity_checkbox" value="1" id="humidity_checkbox"
-              onclick="toggleInput('humidity_checkbox', 'max_humidity')"></td>
-        </tr>
-        <tr>
-          <td><label for="max_humidity">Humidity Threshold (numbers):</label></td>
-          <td><input style="width:200px" type="number" id="max_humidity" name="max_humidity" required disabled></td>
-        </tr>
-
-        <tr>
-          <td><label for="water_checkbox">Water Leakage:</label></td>
-          <td><input style="width:200px" type="checkbox" name="water_checkbox" value="1" id="water_checkbox"></td>
-        </tr>
-
-        <tr>
-          <td><label for="fire_checkbox">Fire:</label></td>
-          <td><input style="width:200px" type="checkbox" name="fire_checkbox" value="1" id="fire_checkbox"></td>
-        </tr>
-
-        <tr>
-          <td><label for="power_checkbox">Power:</label></td>
-          <td><input style="width:200px" type="checkbox" name="power_checkbox" value="1" id="power_checkbox"></td>
-        </tr>
-
-        <tr>
-          <td><label for="doorcontact_checkbox">Door Contact:</label></td>
-          <td><input style="width:200px" type="checkbox" name="doorcontact_checkbox" value="1" id="doorcontact_checkbox"
-              onclick="toggleInput('doorcontact_checkbox', 'max_doorcontact')"></td>
-        </tr>
-        <tr>
-          <td><label for="max_doorcontact">Door Contact Waiting(Seconds) :</label></td>
           <td>
-            <!-- <input style="width:200px" type="number" id="max_doorcontact" name="max_doorcontact" required disabled> -->
+            <div class="card">
+              <div class="card-title">Network Settings</div>
+              <table>
 
 
 
-            <select style="width:200px" name="max_doorcontact" id="max_doorcontact" value="{max_doorcontact}" disabled>
 
 
 
-            </select>
 
 
+                <tr>
+                  <td style="width:500px;"><label for="wifiIp">Device Serial Number:</label></td>
+                  <td><input readonly id="device_serial_number" style="width:200px;font-weight:bold"
+                      value='{device_serial_number}' name="device_serial_number" /></td>
+                </tr>
 
+
+              </table>
+            </div>
           </td>
         </tr>
 
 
+
         <tr>
-          <td><label for="siren_checkbox">Siren Sound:</label></td>
-          <td><input style="width:200px" type="checkbox" name="siren_checkbox" value="1" id="siren_checkbox"
-              onclick="toggleInput('siren_checkbox', 'max_siren_play');toggleInput('siren_checkbox', 'max_siren_pause')">
-          </td>
-        </tr>
-        <tr>
-          <td><label for="max_siren_play">Siren Play(Seconds) :</label></td>
           <td>
+            <div class="card">
+              <div class="card-title">Server Settings</div>
+              <table>
 
 
-            <!-- <input style="width:200px" type="number" id="max_siren_play" name="max_siren_play" required disabled> -->
-
-            <select style="width:200px" name="max_siren_play" id="max_siren_play" value="{max_siren_play}" disabled>
 
 
 
-            </select>
 
+                <tr>
+                  <td style="width:500px;"><label for="serverURL">Server API URL:</label></td>
+                  <td><input style="width:200px" type="text" id="server_url" name="server_url" value="{server_url}"
+                      required />
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="serverURL1">Heartbeat Interval(Seconds):</label></td>
+                  <td> <select style="width:200px" name="heartbeat" id="heartbeat" value="{heartbeat}">
+
+
+
+                    </select> </td>
+                </tr>
+
+                <tr>
+                  <td><label for="serverURL3">Socket IP address:</label></td>
+                  <td><input style="width:200px" type="text" id="server_ip" name="server_ip" value="{server_ip}"
+                      required />
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="serverURL3">Socket Port :</label></td>
+                  <td><input style="width:200px" type="text" id="server_port" name="server_port" value="{server_port}"
+                      required>
+
+                    <div id="socketConnectionStatus"></div>
+                  </td>
+                </tr>
+
+
+
+
+              </table>
+            </div>
           </td>
         </tr>
+
+
+
         <tr>
-          <td><label for="max_siren_pause">Siren Pause Time(Seconds) :</label></td>
           <td>
-            <select style="width:200px" name="max_siren_pause" id="max_siren_pause" value="{max_siren_pause}" disabled>
+            <div class="card">
+              <div class="card-title">Sensor Settings</div>
+              <table>
 
 
 
-            </select>
-            <!-- <input style="width:200px" type="number" id="max_siren_pause" name="max_siren_pause" required disabled> -->
+                <tr>
+                  <td style="width:500px;"><label for="temp_checkbox">Temperature:</label></td>
+                  <td><input style="width:200px" type="checkbox" name="temp_checkbox" id="temp_checkbox"
+                      onclick="toggleInput('temp_checkbox', 'max_temperature');toggleInput('temp_checkbox', 'min_temperature')">
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="max_temperature">Max Temperature Threshold (numbers):</label></td>
+                  <td><input style="width:200px" type="number" step="0.1" id="max_temperature" name="max_temperature"
+                      required disabled>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="min_temperature">Min Temperature Threshold (numbers):</label></td>
+                  <td><input style="width:200px" type="number" step="0.1" id="min_temperature" name="min_temperature"
+                      required disabled>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><label for="humidity_checkbox">Humidity:</label></td>
+                  <td><input style="width:200px" type="checkbox" name="humidity_checkbox" value="1"
+                      id="humidity_checkbox" onclick="toggleInput('humidity_checkbox', 'max_humidity')"></td>
+                </tr>
+                <tr>
+                  <td><label for="max_humidity">Humidity Threshold (numbers):</label></td>
+                  <td><input style="width:200px" type="number" step="0.1" id="max_humidity" name="max_humidity" required
+                      disabled>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><label for="water_checkbox">Water Leakage:</label></td>
+                  <td><input style="width:200px" type="checkbox" name="water_checkbox" value="1" id="water_checkbox">
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><label for="fire_checkbox">Fire:</label></td>
+                  <td><input style="width:200px" type="checkbox" name="fire_checkbox" value="1" id="fire_checkbox"></td>
+                </tr>
+
+                <tr>
+                  <td><label for="power_checkbox">Power:</label></td>
+                  <td><input style="width:200px" type="checkbox" name="power_checkbox" value="1" id="power_checkbox">
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><label for="doorcontact_checkbox">Door Contact:</label></td>
+                  <td><input style="width:200px" type="checkbox" name="doorcontact_checkbox" value="1"
+                      id="doorcontact_checkbox" onclick="toggleInput('doorcontact_checkbox', 'max_doorcontact')"></td>
+                </tr>
+                <tr>
+                  <td><label for="max_doorcontact">Door Contact Waiting(Seconds) :</label></td>
+                  <td>
+                    <!-- <input style="width:200px" type="number" step="0.1" id="max_doorcontact" name="max_doorcontact" required disabled> -->
 
 
+
+                    <select style="width:200px" name="max_doorcontact" id="max_doorcontact" value="{max_doorcontact}"
+                      disabled>
+
+
+
+                    </select>
+
+
+
+                  </td>
+                </tr>
+
+
+                <tr>
+                  <td><label for="siren_checkbox">Siren Sound:</label></td>
+                  <td><input style="width:200px" type="checkbox" name="siren_checkbox" value="1" id="siren_checkbox"
+                      onclick="toggleInput('siren_checkbox', 'max_siren_play');toggleInput('siren_checkbox', 'max_siren_pause')">
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="max_siren_play">Siren Play(Seconds) :</label></td>
+                  <td>
+
+
+                    <!-- <input style="width:200px" type="number" step="0.1" id="max_siren_play" name="max_siren_play" required disabled> -->
+
+                    <select style="width:200px" name="max_siren_play" id="max_siren_play" value="{max_siren_play}"
+                      disabled>
+
+
+
+                    </select>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="max_siren_pause">Siren Pause Time(Seconds) :</label></td>
+                  <td>
+                    <select style="width:200px" name="max_siren_pause" id="max_siren_pause" value="{max_siren_pause}"
+                      disabled>
+
+
+
+                    </select>
+                    <!-- <input style="width:200px" type="number" step="0.1" id="max_siren_pause" name="max_siren_pause" required disabled> -->
+
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td></td>
+                  <td><input type="submit" value="Submit"></td>
+                </tr>
+              </table>
+            </div>
           </td>
         </tr>
 
-        <tr>
-          <td></td>
-          <td><input type="submit" value="Submit"></td>
-        </tr>
       </table>
+
+
 
       <textarea style="display:none" id="config_json">{config_json}</textarea>
     </form>

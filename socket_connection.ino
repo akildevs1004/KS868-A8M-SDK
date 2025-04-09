@@ -103,6 +103,10 @@ void socketDeviceHeartBeatToServer() {
     heartbeatDoc["serialNumber"] = config["device_serial_number"];
     heartbeatDoc["type"] = "heartbeat";
     heartbeatDoc["config"] = deviceConfigContent;  // ////////readConfig("config.json");
+    heartbeatDoc["sensor_data"] = sensorData;  // ////////readConfig("config.json");
+
+
+    
 
     String heartbeatData;
     serializeJson(heartbeatDoc, heartbeatData);
@@ -160,7 +164,7 @@ void updateConfigServerToDevice(String message) {
   String deviceSerial = doc["serialNumber"];
 
   // Check if the message is meant for this device
-  if (config["device_serial_number"] == deviceSerial) {
+  if (device_serial_number == deviceSerial) {
     if (action == "UPDATE_CONFIG") {
       // Update the config file
       JsonObject configCloudServer = doc["config"];
@@ -217,11 +221,13 @@ void sendResponseToServerDeviceConfiguration(const String& jsonString) {
     Serial.print(", action: ");
     Serial.println(request_action);
 
-    if (request_serial_number == config["device_serial_number"] && request_action == "GET_CONFIG") {
+    if (request_serial_number == device_serial_number && request_action == "GET_CONFIG") {
       DynamicJsonDocument configDoc(1024);
-      configDoc["serialNumber"] = config["device_serial_number"];
+      configDoc["serialNumber"] = device_serial_number;
       configDoc["type"] = "config";
       configDoc["config"] = deviceConfigContent;  //readConfig("config.json");
+    configDoc["sensor_data"] = sensorData;  //  
+
 
       String configData;
       serializeJson(configDoc, configData);

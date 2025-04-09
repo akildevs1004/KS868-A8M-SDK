@@ -13,7 +13,11 @@ app.use(express.json());
 // Utils
 const today = new Date().toISOString().split("T")[0];
 const logFilePath = path.join(__dirname, `${today}.log`);
+const rawLogFilePath = path.join(__dirname, `raw_${today}.log`);
+
 const logStream = fs.createWriteStream(logFilePath, { flags: "a" });
+const rawLogStream = fs.createWriteStream(rawLogFilePath, { flags: "a" });
+
 const originalConsoleLog = console.log;
 
 console.log = (...args) => {
@@ -38,7 +42,7 @@ const server = net.createServer((socket) => {
   logWithTime("New device connected");
 
   let buffer = "";
-
+  //Socket for Device Heartbeat communication
   socket.on("data", (data) => {
     buffer += data.toString();
     let boundary = buffer.indexOf("\n");
@@ -55,6 +59,9 @@ const server = net.createServer((socket) => {
         deviceConfigs[serialNumber].socket = socket;
         deviceConfigs[serialNumber].last_heartbeat = new Date().toISOString();
         deviceConfigs[serialNumber].config_data = dataObject.config;
+        deviceConfigs[serialNumber].sensor_data = dataObject.sensor_data;
+
+        rawLogStream.write(message + "\n");
 
         if (dataObject.type === "heartbeat") {
           logWithTime("Received heartbeat from device:", serialNumber);
@@ -135,7 +142,7 @@ setInterval(() => {
   }
 }, 5 * 1000); // every 10 mins
 
-// Express API
+// Express API for We requests from Cloud Software
 app.get("/device-config/:serialNumber", (req, res) => {
   const serialNumber = req.params.serialNumber;
   const deviceData = deviceConfigs[serialNumber];

@@ -29,7 +29,7 @@ String WIFI_SSID = "";
 String WIFI_PASSWORD = "";
 
 // Static IP Configuration for WiFi
-IPAddress wifi_local_IP(192, 168, 1, 20);  // Using .100 as requested
+IPAddress wifi_local_IP(192, 168, 1, 200);  // Using .100 as requested
 IPAddress wifi_gateway(192, 168, 1, 1);
 IPAddress wifi_subnet(255, 255, 255, 0);
 IPAddress wifi_primaryDNS(8, 8, 8, 8);
@@ -71,7 +71,7 @@ void configureWifiEtherNetServer() {
     if (!ETH.begin(ETH_TYPE, ETH_PHY_ADDR, ETH_MDC_PIN, ETH_MDIO_PIN, ETH_POWER_PIN, ETH_CLK_MODE)) {
       Serial.println("Ethernet Failed to Start");
     }
-    //wifi
+     
 
     // Initialize LittleFS
     if (!LittleFS.begin(true)) {

@@ -36,8 +36,7 @@ bool doorcontact_checkbox = false;
 bool siren_checkbox = false;
 
 
-// WiFiManager wifiManager;
-String serverURL = "https://backend.xtremeguard.org/api/alarm_device_status";
+
 
 // Current Status Variables
 int doorOpen = 0;
@@ -212,29 +211,25 @@ void processAlerts() {
   }
 }
 
+
 void sendDataToServer(bool forceSend) {
 
   if (serverURL != "") {
-
-
-
     if (String(temperature) == "-273.00" || String(temperature) == "0.00")  //ignore sensor is not installed
     {
-
-
     } else {
 
 
-      
-
-      String jsonData = "{\"serialNumber\":\"" + config["device_serial_number"].as<String>() + "\",\"humidity\":\"" + String(humidity) + "\",\"temperature\":\"" + String(temperature) + "\",\"doorOpen\":\"" + String(doorOpen) + "\",\"waterLeakage\":\"" + String(waterLeakage) + "\",\"wifiipaddress\":\"" + WiFi.localIP().toString() + "\",\"wifissid\":\"" + String(WiFi.SSID()) +
 
 
-                        "\",\"acPowerFailure\":\"" + String(acPowerFailure) + "\"}";
+      // String jsonData = "{\"serialNumber\":\"" + config["device_serial_number"].as<String>() + "\",\"humidity\":\"" + String(humidity) + "\",\"temperature\":\"" + String(temperature) + "\",\"doorOpen\":\"" + String(doorOpen) + "\",\"waterLeakage\":\"" + String(waterLeakage) + "\",\"wifiipaddress\":\"" + WiFi.localIP().toString() + "\",\"wifissid\":\"" + String(WiFi.SSID()) +
+
+
+      //                   "\",\"acPowerFailure\":\"" + String(acPowerFailure) + "\"}";
 
       StaticJsonDocument<512> doc;
 
-      doc["serialNumber"] = config["device_serial_number"].as<String>();
+      doc["serialNumber"] = device_serial_number;//config["device_serial_number"].as<String>();
       doc["wifiipaddress"] = WiFi.localIP().toString();
       doc["wifissid"] = WiFi.SSID();
 
@@ -267,14 +262,12 @@ void sendDataToServer(bool forceSend) {
         doc["doorOpen"] = String(doorOpen);
       }
 
-
-
       String jsonDataPost;
       serializeJson(doc, jsonDataPost);
-
+      sensorData = jsonDataPost;
 
       Serial.println("Sending: " + jsonDataPost);
-      http.begin(serverURL);
+      http.begin(serverURL + "/alarm_device_status");
       http.addHeader("Content-Type", "application/json");
       int httpCode = http.POST(jsonDataPost);
 
@@ -286,9 +279,7 @@ void sendDataToServer(bool forceSend) {
 
       http.end();
     }
-  }
-  else
-  {
-     Serial.println("Servr URL is empty");
+  } else {
+    Serial.println("Servr URL is empty");
   }
 }

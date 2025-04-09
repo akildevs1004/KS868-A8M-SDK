@@ -43,6 +43,7 @@ WiFiClient client;  // Create a client object
 WebServer server(80);
 
 String deviceConfigContent;
+String sensorData;
 String DeviceIPNumber;
 
 String loginErrorMessage;
@@ -56,9 +57,11 @@ int cloudAccountActiveDaysRemaining = 0;
 unsigned long lastRun = 0;
 const unsigned long interval = 24UL * 60UL * 60UL * 1000UL;  // 24 hours in milliseconds
 // const unsigned long interval = 10UL * 1000UL;  // 24 hours in milliseconds
-
+// WiFiManager wifiManager;
+String serverURL = "";  //"https://backend.xtremeguard.org/api/alarm_device_status";
 
 String todayDate;
+String device_serial_number = "XT123456";
 
 
 void setup() {
@@ -92,25 +95,48 @@ void setup() {
   //   delay(500);
   //   Serial.print("Wifi Internet checking...........");
   // }
-  getDeviceAccoutnDetails();
+  // getDeviceAccoutnDetails();
   if (WiFi.status() == WL_CONNECTED) {
 
     delay(1000);
     updateJsonConfig("config.json", "ipaddress", DeviceIPNumber);
     updateJsonConfig("config.json", "firmWareVersion", firmWareVersion);
 
-    getDeviceAccoutnDetails();
 
+    // Begin the HTTP request
+    http.begin("https://backend.xtremeguard.org/api/get_device_company_info_arduino?serial_number=XT123456");
+
+    // Send the GET request
+    int httpCode = http.GET();
+
+    // Check for HTTP response code
+    if (httpCode > 0) {
+      // HTTP request was successful
+      Serial.printf("HTTP GET request sent. Response code: %d\n", httpCode);
+      String payload = http.getString();
+      Serial.println("Response:");
+      Serial.println(payload);
+    } else {
+      // If the request failed, print error
+      Serial.printf("HTTP GET request failed. Error: %s\n", http.errorToString(httpCode).c_str());
+    }
+
+    // Close the connection
+    http.end();
+    Serial.printf("----------------------------------------");
+
+    return;
 
     socketConnectServer();
     handleHeartbeat();
+    getDeviceAccoutnDetails();
     devicePinDefination();
     updateFirmWaresetup();
     uploadHTMLsetup();
-  }
 
-  if (cloudAccountActiveDaysRemaining <= 0) {
-    Serial.println("❌ XXXXXXXXXXXXXXXXXXXXXXXXXXXXX----Account is expired----XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    if (cloudAccountActiveDaysRemaining <= 0) {
+      Serial.println("❌ XXXXXXXXXXXXXXXXXXXXXXXXXXXXX----Account is expired----XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    }
   }
 }
 
@@ -138,7 +164,6 @@ void loop() {
     } else
 
     {
-      //Serial.println("❌ XXXXXXXXXXXXXXXXXXXXXXXXXXXXX----Account is expired----XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     }
 
 
