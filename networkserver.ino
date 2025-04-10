@@ -22,13 +22,10 @@ const char* USERNAME = "admin";
 const char* PASSWORD = "password";
 
 
-
-//wifi
-// WiFi credentials
 String WIFI_SSID = "";
 String WIFI_PASSWORD = "";
 
-// Static IP Configuration for WiFi
+
 IPAddress wifi_local_IP(192, 168, 1, 200);  // Using .100 as requested
 IPAddress wifi_gateway(192, 168, 1, 1);
 IPAddress wifi_subnet(255, 255, 255, 0);
@@ -44,8 +41,7 @@ bool wifiConnected = false;
 
 //---------------------------NETWORK SETTINGS END------------------------------------------
 void startNetworkProcessStep1() {
-  //wifi
-  //IPAddress local_IP=IPAddress();;
+
 
   Serial.print("USE_ETHERNET----------------------");
   Serial.println(USE_ETHERNET);
@@ -71,7 +67,7 @@ void configureWifiEtherNetServer() {
     if (!ETH.begin(ETH_TYPE, ETH_PHY_ADDR, ETH_MDC_PIN, ETH_MDIO_PIN, ETH_POWER_PIN, ETH_CLK_MODE)) {
       Serial.println("Ethernet Failed to Start");
     }
-     
+
 
     // Initialize LittleFS
     if (!LittleFS.begin(true)) {
@@ -100,84 +96,87 @@ void configureWifiEtherNetServer() {
     }
 
 
-    if (ETH.linkUp()) {
-      configTime(0, 0, "pool.ntp.org");
-      delay(2000);  // Wait for NTP sync
+    // if (ETH.linkUp()) {
+    //   configTime(0, 0, "pool.ntp.org");
+    //   delay(2000);  // Wait for NTP sync
 
-      // // Get today's date
-      todayDate = getCurrentDate();
-      Serial.println("Today's Date: " + todayDate);
-    }
+    //   // // Get today's date
+    //   todayDate = getCurrentDate();
+    //   Serial.println("Today's Date: " + todayDate);
+    // }
   } else {
-    Serial.println("Wifi SSID");
-    Serial.println(config["wifi_ssid"].as<String>());
-    {
-      WiFi.begin(config["wifi_ssid"].as<String>(), config["wifi_password"].as<String>());
 
-      int retryWifiCount = 10;
-      while (WiFi.status() != WL_CONNECTED && retryWifiCount <= 10) {
-        delay(500);
-        Serial.print("Wifi Internet checking...........");
-        retryWifiCount++;
-      }
-
-      configTime(0, 0, "pool.ntp.org");
-      delay(2000);  // Wait for NTP sync
-
-      // // Get today's date
-      todayDate = getCurrentDate();
-      Serial.println("Today's Date: " + todayDate);
-
-
-      IPAddress gateway_c = WiFi.gatewayIP();
-      IPAddress subnet_c = WiFi.subnetMask();
-      IPAddress wifi_id_c = IPAddress();
-      wifi_id_c.fromString(config["wifi_ip"].as<String>());
-      // WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
-      WiFi.config(wifi_id_c, gateway_c, subnet_c);
-      Serial.println("Wifi Static IP: ");
-      Serial.println(WiFi.localIP());
-
-      DeviceIPNumber = WiFi.localIP().toString();
-    }
+    connectWifiInernet();
   }
 }
+void connectWifiInernet() {
 
 
-void connectWiFiWithStaticIP() {
+  String wifissid = config["wifi_ssid"].as<String>();
+  String wifipassword = config["wifi_password"].as<String>();
 
-  // WIFI_SSID = "akil";
-  //  WIFI_PASSWORD = "Akil1234";
-  Serial.println(WIFI_SSID);
-  Serial.println("Saved Wifi Details");
+  // Step 1: Connect with DHCP to fetch gateway & subnet
+  Serial.println("Connecting with DHCP to get gateway...");
+  WiFi.begin(wifissid, wifipassword);
 
-
-
-  // Configure static IP
-  if (!WiFi.config(wifi_local_IP, wifi_gateway, wifi_subnet, wifi_primaryDNS, wifi_secondaryDNS)) {
-    Serial.println("Failed to configure WiFi with static IP");
+  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("Initial WiFi connection failed");
     return;
   }
 
-  // Connect to WiFi network
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.print("Connecting to WiFi");
+  IPAddress gateway = WiFi.gatewayIP();
+  IPAddress subnet = WiFi.subnetMask();
 
-  unsigned long startAttemptTime = millis();
+  Serial.print("Detected Gateway: ");
+  Serial.println(gateway);
+  Serial.print("Detected Subnet : ");
+  Serial.println(subnet);
 
-  while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 20000) {
-    Serial.print(".");
-    delay(500);
+  // Step 2: Prepare static IP settings from config
+  IPAddress staticIP, primaryDNS, secondaryDNS;
+
+  if (!staticIP.fromString(config["wifi_ip"].as<String>())) {
+    Serial.println("Invalid static IP in config");
+    return;
   }
 
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("\nFailed to connect to WiFi");
-  } else {
-    Serial.println("\nWiFi connected");
-    Serial.print("Static IP address: ");
-    Serial.println(WiFi.localIP());
+  if (!primaryDNS.fromString(config["primary_dns"] | "8.8.8.8")) {
+    primaryDNS = IPAddress(8, 8, 8, 8);
   }
+
+  if (!secondaryDNS.fromString(config["secondary_dns"] | "8.8.4.4")) {
+    secondaryDNS = IPAddress(8, 8, 4, 4);
+  }
+
+  // Step 3: Disconnect, apply static IP config, and reconnect
+  Serial.println("Reconnecting with static IP...");
+  WiFi.disconnect(true);
+  delay(500);
+
+  bool success = WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS);
+  if (!success) {
+    Serial.println("Failed to set static IP config!");
+    return;
+  }
+
+  WiFi.begin(wifissid, wifipassword);
+
+  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("WiFi reconnection with static IP failed");
+    return;
+  }
+  DeviceIPNumber = WiFi.localIP().toString();
+
+  // Done!
+  Serial.println("WiFi Connected with Static IP:");
+  Serial.print("IP Address : ");
+  Serial.println(WiFi.localIP());
+  Serial.print("Gateway    : ");
+  Serial.println(WiFi.gatewayIP());
+  Serial.print("Subnet     : ");
+  Serial.println(WiFi.subnetMask());
 }
+
 
 // Your existing WiFi event handler
 void WiFiEvent(WiFiEvent_t event) {
@@ -185,6 +184,22 @@ void WiFiEvent(WiFiEvent_t event) {
   // Add specific event handling if needed
 }
 
+
+void connectDefaultWifiAuto() {
+
+  bool res;
+  res = wifiManager.autoConnect(device_serial_number.c_str());  // SSID and Password for AP
+
+  if (!res) {
+    Serial.println("Failed to connect. Restarting...");
+    delay(3000);
+    ESP.restart();
+  }
+  DeviceIPNumber = WiFi.localIP().toString();
+  // Connected successfully
+  Serial.println("Connected to WiFi!");
+  Serial.println(WiFi.localIP());
+}
 
 String getWiFiStatus() {
   switch (WiFi.status()) {

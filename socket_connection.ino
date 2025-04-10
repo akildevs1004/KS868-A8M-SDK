@@ -103,10 +103,7 @@ void socketDeviceHeartBeatToServer() {
     heartbeatDoc["serialNumber"] = config["device_serial_number"];
     heartbeatDoc["type"] = "heartbeat";
     heartbeatDoc["config"] = deviceConfigContent;  // ////////readConfig("config.json");
-    heartbeatDoc["sensor_data"] = sensorData;  // ////////readConfig("config.json");
-
-
-    
+    heartbeatDoc["sensor_data"] = sensorData;  // ////////readConfig("config.json");    
 
     String heartbeatData;
     serializeJson(heartbeatDoc, heartbeatData);
@@ -124,7 +121,7 @@ void socketDeviceHeartBeatToServer() {
 }
 
 void processSocketServerRequests() {
-  // Verify if the client is available before reading data
+  
   ///////////////////socketVerifyConnection();
   //Serial.println("Checking Request from server:--------------------------------------- ");
   if (client.connected() && client.available()) {
@@ -168,13 +165,7 @@ void updateConfigServerToDevice(String message) {
     if (action == "UPDATE_CONFIG") {
       // Update the config file
       JsonObject configCloudServer = doc["config"];
-      ///updateConfigFile(config);
-
-      // updateJsonConfig("config.json", "server_url", configCloudServer["server_url"]);
-      // updateJsonConfig("config.json", "heartbeat", configCloudServer["heartbeat"]);
-      // updateJsonConfig("config.json", "server_ip", configCloudServer["server_ip"]);
-      // updateJsonConfig("config.json", "server_port", configCloudServer["server_port"]);
-      // updateJsonConfig("config.json", "gmtTimeZone", configCloudServer["gmtTimeZone"]);
+    
 
       for (JsonPair kv : configCloudServer) {
         const char* key = kv.key().c_str();  // Get the key
@@ -265,20 +256,4 @@ void handleHeartbeat() {
     processSocketServerRequests();
   }
 }
-
-
-// void connectToServer() {
-//   const char* serverIP = "64.227.164.43"; // Your server IP
-// const int serverPort = 6002;            // Server port
-//     Serial.print("Connecting to server ");
-//     Serial.print(serverIP);
-//     Serial.print(":");
-//     Serial.println(serverPort);
-
-//     if (client.connect(serverIP, serverPort)) {
-//         Serial.println("Connected to server!");
-//         client.println("Hello Server!"); // Send some data
-//     } else {
-//         Serial.println("Connection to server failed.");
-//     }
-// }
+ 

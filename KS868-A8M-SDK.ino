@@ -21,7 +21,6 @@
 
 #include <Update.h>
 #include "FS.h"
-// #include "SPIFFS.h"
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
@@ -29,40 +28,32 @@
 #include <time.h>
 
 
-String firmWareVersion = "2.0";
+
 
 WiFiManager wifiManager;
-
-
 DynamicJsonDocument config(1024);  // Allocate 1024 bytes for JSON storage
 String sessionToken = "";
 
 bool loginStatus = false;
-bool USE_ETHERNET = true;
+
 WiFiClient client;  // Create a client object
 WebServer server(80);
-
 String deviceConfigContent;
 String sensorData;
 String DeviceIPNumber;
-
 String loginErrorMessage;
-
 String GlobalWebsiteResponseMessage;
 String GlobalWebsiteErrorMessage;
-
-
 HTTPClient http;
 int cloudAccountActiveDaysRemaining = 0;
 unsigned long lastRun = 0;
-const unsigned long interval = 24UL * 60UL * 60UL * 1000UL;  // 24 hours in milliseconds
-// const unsigned long interval = 10UL * 1000UL;  // 24 hours in milliseconds
-// WiFiManager wifiManager;
-String serverURL = "";  //"https://backend.xtremeguard.org/api/alarm_device_status";
-
+const unsigned long interval = 24UL * 60UL * 60UL * 1000UL;  // 24 hours in milliseconds 
+String serverURL = "";   
 String todayDate;
 String device_serial_number = "XT123456";
-
+bool USE_ETHERNET = true;
+bool USE_DEFAULT_WIFIMANGER = true;
+String firmWareVersion = "2.0";
 
 void setup() {
   Serial.begin(115200);
@@ -80,8 +71,13 @@ void setup() {
         USE_ETHERNET = false;
     }
   }
+  if (USE_DEFAULT_WIFIMANGER) {
 
-  startNetworkProcessStep1();  //load config and start Device web server
+    connectDefaultWifiAuto();
+
+  } else {
+    startNetworkProcessStep1();  //load config and start Device web server
+  }
 
   lastRun = millis();  // Initial timestamp
 
@@ -90,42 +86,19 @@ void setup() {
   Serial.println("HTTP Server started");
 
 
-
-  // while (WiFi.status() != WL_CONNECTED) {
-  //   delay(500);
-  //   Serial.print("Wifi Internet checking...........");
-  // }
-  // getDeviceAccoutnDetails();
   if (WiFi.status() == WL_CONNECTED) {
 
     delay(1000);
     updateJsonConfig("config.json", "ipaddress", DeviceIPNumber);
     updateJsonConfig("config.json", "firmWareVersion", firmWareVersion);
 
+    configTime(0, 0, "pool.ntp.org");
+    delay(2000);  // Wait for NTP sync
 
-    // Begin the HTTP request
-    http.begin("https://backend.xtremeguard.org/api/get_device_company_info_arduino?serial_number=XT123456");
+    // // Get today's date
+    todayDate = getCurrentDate();
+    Serial.println("Today's Date: " + todayDate);
 
-    // Send the GET request
-    int httpCode = http.GET();
-
-    // Check for HTTP response code
-    if (httpCode > 0) {
-      // HTTP request was successful
-      Serial.printf("HTTP GET request sent. Response code: %d\n", httpCode);
-      String payload = http.getString();
-      Serial.println("Response:");
-      Serial.println(payload);
-    } else {
-      // If the request failed, print error
-      Serial.printf("HTTP GET request failed. Error: %s\n", http.errorToString(httpCode).c_str());
-    }
-
-    // Close the connection
-    http.end();
-    Serial.printf("----------------------------------------");
-
-    return;
 
     socketConnectServer();
     handleHeartbeat();
@@ -152,10 +125,7 @@ void loop() {
       updateFirmWareLoop();
 
       unsigned long currentMillis = millis();
-      // Serial.print(currentMillis - lastRun);
-      // Serial.print("----");
-
-      // Serial.println(interval);
+     
 
       if (currentMillis - lastRun >= interval) {
         lastRun = currentMillis;

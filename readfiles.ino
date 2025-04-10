@@ -215,7 +215,7 @@ void updateJsonConfig(String filename, String param, String value) {
   // Close the file
   configFile.close();
 
-  Serial.println("Configuration updated successfully.");
+  //Serial.println("Configuration updated successfully.");
 
   Serial.println(param);
   readConfig("config.json");

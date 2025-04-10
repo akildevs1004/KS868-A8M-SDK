@@ -5,7 +5,7 @@ void getDeviceAccoutnDetails() {
 
   int httpCode;
 
-  String company = "";//"DEMO COMPANY";
+  String company = "";  //"No COMPANY";
   String accountExpiry = "Not Set";
   cloudAccountActiveDaysRemaining = 40;
 
@@ -15,36 +15,17 @@ void getDeviceAccoutnDetails() {
   int retry = 0;
   const int retryCount = 5;
 
-  while (company == "" && retry < retryCount) {
+  while (company.isEmpty() && retry < retryCount) {
     Serial.println("⏳ Waiting for Account Details...");
-
-
-
-    //String serverDeviceURL = "http://192.168.3.192:8000/api/get_device_company_info_arduino?serial_number=XT123456";
-
+    String url = serverURL + "/get_device_company_info_arduino?serial_number=" + device_serial_number;
     Serial.println("-----------------------------------Reading Account Details...");
-    Serial.println(serverURL + "/get_device_company_info_arduino?serial_number=" + device_serial_number);
+    Serial.println(url);
 
-    // http.setInsecure();  // Disable SSL certificate verification (for testing only)
-
-    http.begin(serverURL + "/get_device_company_info_arduino?serial_number=" + device_serial_number);  // Initialize HTTP client with URL
-    // http.addHeader("Content-Type", "application/json");  // Optional for GET
+    HTTPClient http;
+    http.begin(url);
     http.setTimeout(5000);  // Set timeout to 5 seconds
-                            // httpCode = http.GET();  // Send the request
-    httpCode = http.GET();
 
-
-    // http.begin(serverURL + "/alarm_device_status");
-    //   http.addHeader("Content-Type", "application/json");
-    //   int httpCode = http.POST(jsonDataPost);
-
-    //   if (httpCode > 0) {
-    //     Serial.println("HTTP Response: " + String(httpCode));
-    //   } else {
-    //     Serial.println("HTTP Error: " + String(httpCode));
-    //   }
-
-    //   http.end();
+    int httpCode = http.GET();
 
     if (httpCode > 0) {
       Serial.println("HTTP Response Code: " + String(httpCode));
@@ -53,48 +34,31 @@ void getDeviceAccoutnDetails() {
         String payload = http.getString();
         Serial.println("Response: " + payload);
 
-
-
         DeserializationError error = deserializeJson(accountDoc, payload);
-
-        if (error) {
+        if (!error) {
+          company = accountDoc["company"]["name"] | "No COMPANY";
+          accountExpiry = accountDoc["company"]["expiry"] | "Not Set";
+        } else {
           Serial.print("JSON Parsing Failed: ");
           Serial.println(error.c_str());
-
-        } else {
-          company = String(accountDoc["company"]["name"]);
-          accountExpiry = String(accountDoc["company"]["expiry"]);
         }
-
-
-
       } else {
-        Serial.println("HTTP Error: " + String(http.errorToString(httpCode)));
-
-        cloudAccountActiveDaysRemaining = 40;
-        company = "DEMO COMPANY";
-        accountExpiry = "Not Set";
+        Serial.println("HTTP Error: " + http.errorToString(httpCode));
       }
-
-      http.end();  // Close connection
+    } else {
+      Serial.println("HTTP Connection Failed: " + http.errorToString(httpCode));
     }
-    delay(1000);
-    retry++;
 
+    http.end();  // Always close connection
+
+    if (company.isEmpty()) {
+      delay(1000);
+      retry++;
+    }
   }  //while
 
 
 
-  // Expiry date (format: YYYY/MM/DD)
-  // String expiryDate = "2025/10/13";  // Example expiry date
-
-  // Sync time using NTP
-  configTime(0, 0, "pool.ntp.org");
-  delay(2000);  // Wait for NTP sync
-
-  // Get today's date
-  String todayDate111 = getCurrentDate();
-  Serial.println("Today's Date: " + todayDate111);
 
   // // Calculate remaining days
   cloudAccountActiveDaysRemaining = calculateRemainingDays(accountExpiry);
@@ -107,7 +71,7 @@ void getDeviceAccoutnDetails() {
 
   Serial.println("Parsed Values:");
   Serial.println("Company: " + company);
-  Serial.println("Status: " + accountExpiry);
+  Serial.println("Expiry: " + accountExpiry);
   Serial.println("Days Remaining: " + String(cloudAccountActiveDaysRemaining));
 
   Serial.println("---------------------------------------------------------------------------");
@@ -157,6 +121,9 @@ time_t getEpochFromDate(String dateStr) {
 int calculateRemainingDays(String expiryDateStr) {
   time_t now;
   time(&now);  // Get current time (epoch time)
+
+
+  Serial.println("Input Expiry " + expiryDateStr);
 
   time_t expiry = getEpochFromDate(expiryDateStr);  // Get expiry date as epoch time
 

@@ -2,21 +2,13 @@
 
 File fsUploadFile;
 
-// Function to serve the HTML upload form
+ 
 void handleUploadForm() {
-  // String page = readFile("/uploadhtml.html");
-
-
+ 
   String header = readFile("/header.html");
-
   String html = readFile("/uploadhtml.html");
-
   html = header + html;
-
   html = replaceHeaderContent(html);
-
-
-
   server.send(200, "text/html", html);
 }
 
@@ -47,21 +39,7 @@ void handleHtmlFileUpload() {
     server.send(200, "text/plain", "File Uploaded Successfully");
   }
 }
-
-// Function to read a file from LittleFS
-// String readFile(String path) {
-//   File file = LittleFS.open(path, "r");
-//   if (!file || file.isDirectory()) {
-//     return String("");
-//   }
-
-//   String content;
-//   while (file.available()) {
-//     content += file.readStringUntil('\n') + "\n";
-//   }
-//   file.close();
-//   return content;
-// }
+ 
 
 void uploadHTMLsetup() {
 

@@ -15,11 +15,6 @@ void updateFirmWaresetup() {
   // Setup OTA
   ArduinoOTA.begin();
 
-
-
-
-
-
   // Route for root / web page
   server.on("/updatefirmware", HTTP_GET, []() {
     String header = readFile("/header.html");
