@@ -199,6 +199,8 @@ void connectDefaultWifiAuto() {
   // Connected successfully
   Serial.println("Connected to WiFi!");
   Serial.println(WiFi.localIP());
+
+  handleRestartDevice();
 }
 
 String getWiFiStatus() {
